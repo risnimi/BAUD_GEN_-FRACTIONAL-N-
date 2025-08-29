@@ -1,1 +1,8 @@
-sim
+# build artifacts
+sim/*.vvp
+sim/*.vcd
+sim/build/
+sim/waves/
+
+# VS Code
+.vscode/
