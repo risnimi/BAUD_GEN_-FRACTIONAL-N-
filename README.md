@@ -1,10 +1,12 @@
-BIT RATE – BAUD – SYMBOL & BAUD‑GENERATOR (UART)
+# BIT RATE – BAUD – SYMBOL & BAUD‑GENERATOR (UART)
 
-0) Ký hiệu nhanh
+## 0) Ký hiệu nhanh
+
 •	Rb: bit rate (bits per second, bps) – số bit/giây trên đường truyền.
 •	Rs: symbol rate / baud rate (symbols per second, baud) – số symbol/giây.
 
-1) Định nghĩa & quan hệ
+## 1) Định nghĩa & quan hệ
+
 Bit rate (Rb):
 •	Gross: tính cả overhead (start/stop/parity, 8b/10b, FEC…).
 •	Net/throughput: chỉ payload = gross × hiệu suất khung.
@@ -17,7 +19,8 @@ Ví dụ hiệu suất UART:
 •	8N1: 1 start + 8 data + 1 stop = 10 bit/khung ⇒ hiệu suất = 8/10 = 80%.
 •	8E1: thêm parity = 11 bit/khung ⇒ hiệu suất = 8/11 ≈ 72.7%.
 
-2) Baud‑Generator (clock‑enable divider)
+## 2) Baud‑Generator (clock‑enable divider)
+
 Mục tiêu: tạo xung cho phép (clock‑enable) từ clock hệ thống “clk” để chạy đúng baud, không tạo thêm clock domain.
 Hai xung đầu ra thường dùng:
 •	tick_bit @ BAUD: xung 1 chu kỳ clk, xuất hiện mỗi bit‑time; TX dùng để bước/shift sang bit mới.
@@ -25,7 +28,8 @@ Hai xung đầu ra thường dùng:
 “Xung 1 chu kỳ” là gì? Đồng bộ với clk và chỉ lên “1” đúng một chu kỳ clk (lên ở cạnh lên này, về “0” ở cạnh lên kế tiếp). Đây là enable, không phải clock mới.
 Quan hệ chốt: 1 bit‑time = OSR × tick_osr = 1 × tick_bit.
 
-3) Tạo tick_osr và tick_bit từ F_CLK
+## 3) Tạo tick_osr và tick_bit từ F_CLK
+
 Mục tiêu tần số:
 •	F_TICK_OSR = BAUD × OSR
 •	F_TICK_BIT = BAUD
@@ -36,13 +40,15 @@ Ví dụ:
 •	N_ideal = 50,000,000 / 1,843,200 ≈ 27.126.
 •	Fractional‑N: đa số khoảng cách 27 chu kỳ, thỉnh thoảng 28 chu kỳ để đạt trung bình ~27.126.
 
-4) Vai trò trong TX/RX
+## 4) Vai trò trong TX/RX
+
 TX (truyền): dùng tick_bit để shift/gửi theo trình tự: start → d0 → … → d7 → parity (nếu có) → stop.
 RX (nhận): dùng tick_osr để oversample:
 •	Phát hiện cạnh rơi của start → đợi OSR/2 tick để trúng giữa bit.
 •	Sau đó mỗi OSR tick lấy mẫu 1 lần (thường vote 3 mẫu quanh giữa bit để tăng miễn nhiễu).
 
-5) Jitter là gì? (và vì sao chấp nhận được)
+## 5) Jitter là gì? (và vì sao chấp nhận được)
+
 Jitter = độ lệch thời điểm xuất hiện của tick/edge so với lịch lý tưởng.
 Các cách đo phổ biến:
 •	Period jitter: ΔTn = Tn − T_ideal (chênh lệch chu kỳ so với lý tưởng).
